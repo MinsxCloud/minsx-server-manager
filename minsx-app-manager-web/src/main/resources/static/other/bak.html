@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App-Manager-Platform</title>
+    <!-- vue-component -->
+    <script src="../js/vue.js"></script>
+    <!-- minsx-style -->
+    <link rel="stylesheet" href="../css/minsx.css" type="text/css"/>
+    <!-- element-ui-style -->
+    <link rel="stylesheet" href="../theme/minsx/index.css">
+    <!-- element-ui-component -->
+    <script src="../js/element.js"></script>
+</head>
+<body>
+
+<div id="app">
+
+    <div id="header">
+        <a href="/"><div class="logo"></div></a>
+        <div class="title">应用管理平台（App Manager Platform）</div>
+    </div>
+    <div id="topNav">
+        <el-menu
+                :default-active="activeIndex"
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#3C3F41"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+            <el-menu-item index="1"><i class="el-icon-menu"></i>应用概览</el-menu-item>
+            <el-menu-item index="2"><i class="el-icon-date"></i>应用日志</el-menu-item>
+            <el-menu-item index="3"><i class="el-icon-setting"></i>系统设置</el-menu-item>
+            <el-menu-item index="4"><i class="el-icon-warning"></i>异常统计</el-menu-item>
+        </el-menu>
+    </div>
+
+    <div id="section">
+
+
+    </div>
+
+    <div id="footer">
+        Copyright © 2016-2017 minsx.com All rights reserved.
+    </div>
+
+</div>
+
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'App-Manager-Platform!',
+            activeIndex: '1'
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

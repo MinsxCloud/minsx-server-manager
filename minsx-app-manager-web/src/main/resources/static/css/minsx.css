@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
+body, html {
+    font-family: "Microsoft YaHei", serif;
+    background-color: #F8F8F8;
+}
+
+body {
+    margin: 0 auto;
+    top: 20px;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    width: 960px;
+    min-width: 960px;
+    max-width: 960px;
+    position: absolute;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+    -o-box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+#header {
+    top: 0;
+    position: absolute;
+    width: 960px;
+    height: 80px;
+}
+
+#header .logo {
+    background: url(../image/logo.png) no-repeat left center;
+    background-size: 80%;
+    background-position-x: 30px;
+    width: 250px;
+    height: 80px;
+}
+
+#header .title {
+    top: 0;
+    left: 250px;
+    position: absolute;
+    width: 710px;
+    height: 80px;
+    line-height: 95px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6f7180;
+}
+
+#topNav {
+    top: 80px;
+    position: absolute;
+    width: 960px;
+    color: white;
+    text-align: center;
+    background-color: black;
+}
+
+#section {
+    top: 141px;
+    bottom: 70px;
+    width: 940px;
+    position: absolute;
+    overflow: auto;
+    padding: 10px;
+
+}
+
+#footer {
+    background-color: #3C3F41;
+    color: white;
+    text-align: center;
+    bottom: 10px;
+    width: 960px;
+    height: 57px;
+    border-top: 3px solid #ffd04b;
+    line-height: 57px;
+    position: absolute;
+}
+
+/*****/
+.elem-quote {
+    margin-bottom: 10px;
+    padding: 15px;
+    line-height: 22px;
+    border-left: 5px solid #3C3F41;
+    border-radius: 0 2px 2px 0;
+    font-size: 14px;
+    background-color: #f2f2f2;
+}
+
+.top-bottom-interval-panel {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.box-card-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.bottom-interval {
+    padding-bottom: 10px;
+}
+
+.right-interval {
+    padding-right: 10px;
+}
+
+.left-interval {
+    padding-left: 30px;
+}
+
+/*******/
+
+.float-right-button {
+    float: right !important;
+    margin: 0 10px !important;
+    padding: 3px 10px !important;
+}
+
+.grid-content.bg-purple {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin: 5px 0 !important;
+    font-size: 14px;
+}
+
+.el-icon-loading {
+    font-weight: 600 !important;
+    color: #5daf34 !important;
+}

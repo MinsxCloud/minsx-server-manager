@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>App-Manager-Platform</title>
+    <!-- vue-component -->
+    <script th:src="@{/js/vue.js}"></script>
+    <!-- minsx-style -->
+    <link rel="stylesheet" th:href="@{/css/minsx.css}" type="text/css"/>
+    <!-- element-ui-style -->
+    <link rel="stylesheet" th:href="@{/theme/minsx/index.css}">
+    <!-- element-ui-component -->
+    <script th:src="@{/js/element.js}"></script>
+</head>
+<body>
+
+<div id="app">
+    <top-header></top-header>
+    <top-menu active-index="1"></top-menu>
+    <div id="section">
+
+    </div>
+    <bottom-footer></bottom-footer>
+</div>
+
+<script th:src="@{/component/top-menu.js}"></script>
+<script th:src="@{/component/top-header.js}"></script>
+<script th:src="@{/component/bottom-footer.js}"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            message: 'App-Manager-Platform!'
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    });
+</script>
+</body>
+</html>
