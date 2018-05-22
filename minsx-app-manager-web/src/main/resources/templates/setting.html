@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>米斯云应用管理平台</title>
+    <!-- vue-component -->
+    <script th:src="@{/js/vue.js}"></script>
+    <!-- minsx-style -->
+    <link rel="stylesheet" th:href="@{/css/minsx.css}" type="text/css"/>
+    <!-- element-ui-style -->
+    <link rel="stylesheet" th:href="@{/theme/minsx/index.css}">
+    <!-- element-ui-component -->
+    <script th:src="@{/js/element.js}"></script>
+    <!-- axios -->
+    <script th:src="@{/js/axios.js}"></script>
+    <!-- requester -->
+    <script th:src="@{/js/minsx-request.js}"></script>
+</head>
+<body>
+
+<div id="app">
+    <top-header></top-header>
+    <top-menu active-index="3"></top-menu>
+    <div id="section">
+        <div class="elem-quote">
+            说明：系统设置的相关说明
+        </div>
+
+        <template>
+            <el-tabs type="card">
+                <el-tab-pane label="基本设置" name="first"></el-tab-pane>
+                <el-tab-pane label="应用设置" name="second"></el-tab-pane>
+                <el-tab-pane label="异常通知设置" name="third"></el-tab-pane>
+                <el-tab-pane label="定时任务设置" name="fourth"></el-tab-pane>
+            </el-tabs>
+        </template>
+    </div>
+    <bottom-footer></bottom-footer>
+</div>
+
+<script th:src="@{/component/top-menu.js}"></script>
+<script th:src="@{/component/top-header.js}"></script>
+<script th:src="@{/component/bottom-footer.js}"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            apps: {}
+        },
+        filters: {
+            b: function (flag) {
+                return flag ? '是' : '否';
+            },
+            d: function (value) {
+                return value || '暂无数据';
+            }
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            getApps() {
+                MinsxRequest.get("/app/listApps").then(response => {
+                    if (response.status === 200) {
+                        this.apps = response.data;
+                    }
+                }).catch(error => {
+                });
+            }
+        },
+        created: function () {
+            this.getApps();
+        }
+    });
+
+</script>
+</body>
+</html>

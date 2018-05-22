@@ -22,7 +22,6 @@ import com.minsx.appmanager.core.task.TaskManager;
 import com.minsx.appmanager.web.entity.Application;
 import com.minsx.appmanager.web.repository.ApplicationRepository;
 import com.minsx.appmanager.web.service.api.ApplicationService;
-import com.minsx.appmanager.web.util.ApplicationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,32 +37,49 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
 
     @Override
-    public Application saveTask(Task task) {
-        Application application = applicationRepository.findByAppName(task.getAppName());
-        if (application == null) application = new Application();
-        ApplicationUtils.flushApplication(application, task);
-        return applicationRepository.save(application);
-    }
-
-    @Override
     public ResponseEntity<?> addApplication(Application application) {
         Application app = applicationRepository.findByAppName(application.getAppName());
         if (app != null) {
             return new ResponseEntity<>("应用已存在", HttpStatus.BAD_REQUEST);
         } else {
             app = applicationRepository.saveAndFlush(application);
+            TaskManager.addTask(app);
             return new ResponseEntity<Object>(app, HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<?> deleteApplication(String appName) {
-        return null;
+        Application app = applicationRepository.findByAppName(appName);
+        if (app == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            Task task = TaskManager.getTask(app.getAppName());
+            if (task != null && task.isRunning()) {
+                return new ResponseEntity<>("应用正在运行,不可删除,请先停止应用", HttpStatus.BAD_REQUEST);
+            }
+            applicationRepository.delete(app);
+            TaskManager.stopAndRemoveTask(app.getAppName());
+            return new ResponseEntity<Object>(app, HttpStatus.OK);
+        }
     }
 
     @Override
     public ResponseEntity<?> updateApplication(Application application) {
-        return null;
+        Application app = applicationRepository.findByAppName(application.getAppName());
+        if (app == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            Task task = TaskManager.getTask(application.getAppName());
+            if (task != null && task.isRunning()) {
+                return new ResponseEntity<>("应用正在运行,不可更改,请先停止应用", HttpStatus.BAD_REQUEST);
+            } else {
+                app = applicationRepository.saveAndFlush(application);
+                TaskManager.stopAndRemoveTask(application.getAppName());
+                TaskManager.addTask(app);
+                return new ResponseEntity<>(app, HttpStatus.OK);
+            }
+        }
     }
 
     @Override
@@ -92,6 +108,67 @@ public class ApplicationServiceImpl implements ApplicationService {
         });
         applicationRepository.saveAll(applications);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> startApp(String appName) {
+        Task task = TaskManager.getTask(appName);
+        if (task == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            if (task.isRunning()) {
+                return new ResponseEntity<>("应用正在运行,请勿重复启动", HttpStatus.BAD_REQUEST);
+            } else {
+                task.start();
+                return new ResponseEntity<>((Application) task, HttpStatus.OK);
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> reStartApp(String appName) {
+        Task task = TaskManager.getTask(appName);
+        if (task == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            if (task.isRunning()) {
+                task.reStart();
+                return new ResponseEntity<>((Application) task, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("应用未在运行,无法重启", HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> stopApp(String appName) {
+        Task task = TaskManager.getTask(appName);
+        if (task == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            if (task.isRunning()) {
+                task.stop();
+                return new ResponseEntity<>((Application) task, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("应用未在运行,无法停止", HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getApp(String appName) {
+        Task task = TaskManager.getTask(appName);
+        if (task == null) {
+            return new ResponseEntity<>("应用不存在", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>((Application) task, HttpStatus.OK);
+        }
+    }
+
+    /*******************************************************************/
+    @Override
+    public Application saveTask(Task task) {
+        return applicationRepository.save((Application) task);
     }
 
 }

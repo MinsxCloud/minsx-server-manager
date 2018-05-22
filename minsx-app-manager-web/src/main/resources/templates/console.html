@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>米斯云应用管理平台</title>
+    <!-- vue-component -->
+    <script th:src="@{/js/vue.js}"></script>
+    <!-- minsx-style -->
+    <link rel="stylesheet" th:href="@{/css/minsx.css}" type="text/css"/>
+    <!-- element-ui-style -->
+    <link rel="stylesheet" th:href="@{/theme/minsx/index.css}">
+    <!-- element-ui-component -->
+    <script th:src="@{/js/element.js}"></script>
+    <!-- axios -->
+    <script th:src="@{/js/axios.js}"></script>
+    <!-- requester -->
+    <script th:src="@{/js/minsx-request.js}"></script>
+</head>
+<body>
+<div id="app">
+    <top-header></top-header>
+    <top-menu active-index="2"></top-menu>
+    <div id="section">
+
+        <div class="elem-quote">
+            说明：应用控制台的相关说明
+        </div>
+
+        <div class="console-explain-text">
+            <el-menu class="el-menu-demo" mode="horizontal" background-color="#F8F8F8">
+                <el-submenu :index="app.appName" v-for="app in apps" :key="app.appName">
+                    <template slot="title">{{app.appName}}</template>
+                    <el-menu-item :index="app.appName+'-out'" @click="handleSelect(app.appName,'out')">标准</el-menu-item>
+                    <el-menu-item :index="app.appName+'-error'" @click="handleSelect(app.appName,'err')">异常
+                    </el-menu-item>
+                </el-submenu>
+            </el-menu>
+
+            <div class="console-text" v-html="consoleContent"></div>
+        </div>
+
+        <div class="command-input">
+            <el-input placeholder="请输入命令, 按回车键发送">
+                <template slot="prepend">命令</template>
+            </el-input>
+        </div>
+
+    </div>
+    <bottom-footer></bottom-footer>
+</div>
+
+<script th:src="@{/component/top-menu.js}"></script>
+<script th:src="@{/component/top-header.js}"></script>
+<script th:src="@{/component/bottom-footer.js}"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            apps: [],
+            selectedAppName: '',
+            selectedOutOrErr: 'out',
+            consoleContent: ''
+        },
+        filters: {
+            b: function (flag) {
+                return flag ? '是' : '否';
+            },
+            d: function (value) {
+                return value || '暂无数据';
+            }
+        },
+        methods: {
+            initialAppsInfo() {
+                MinsxRequest.get("/app/listApps").then(response => {
+                    if (response.status === 200) {
+                        this.apps = response.data;
+                        this.selectedAppName = this.apps.length > 0 ? this.apps[0].appName : ''
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: error.response.data,
+                        type: 'error'
+                    });
+                });
+            },
+            getApp() {
+                if (this.selectedAppName !== '') {
+                    MinsxRequest.get("/app/getApp/" + this.selectedAppName).then(response => {
+                        if (response.status === 200) {
+                            const currentApp = response.data;
+                            if (this.selectedOutOrErr === 'out') {
+                                this.consoleContent = currentApp.outBuffer;
+                            } else if (this.selectedOutOrErr === 'err') {
+                                this.consoleContent = currentApp.errBuffer;
+                            }
+                        }
+                    }).catch(error => {
+                        this.$message({
+                            message: error.response.data,
+                            type: 'error'
+                        });
+                    });
+                }
+            },
+            handleSelect(appName, outOrErr) {
+                this.selectedAppName = appName;
+                this.selectedOutOrErr = outOrErr;
+            }
+        },
+        created: function () {
+            this.initialAppsInfo();
+        },
+        mounted: function () {
+            setInterval(this.getApp, 200);
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -34,6 +34,7 @@ public class WebServerInitial implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        addNewApplication();
         initialTaskPool();
     }
 
@@ -45,13 +46,12 @@ public class WebServerInitial implements CommandLineRunner {
 
 
     public void addNewApplication() {
-        Application application = applicationRepository.findByAppName("ngrok");
+        Application application = applicationRepository.findByAppName("Web Server");
         if (application == null) application = new Application();
-        application.setAppName("ngrok");
-        application.setCommand("E:\\Project\\Java\\minsx-all\\minsx-app-manager\\app\\ngrok.exe http 8693");
-        application.setInPath("E:\\Project\\Java\\minsx-all\\minsx-app-manager\\app");
+        application.setAppName("Web Server");
+        application.setCommand("cmd /c Run.bat");
+        application.setInPath("E:/Temp/RunTest/MsAuthServer");
         applicationRepository.save(application);
-        TaskManager.addAndRunTask(application);
     }
 
 

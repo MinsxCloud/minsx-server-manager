@@ -38,4 +38,12 @@ public interface ApplicationService {
     ResponseEntity<?> listApplications();
 
     ResponseEntity<?> stopAllApps();
+
+    ResponseEntity<?> startApp(String appName);
+
+    ResponseEntity<?> reStartApp(String appName);
+
+    ResponseEntity<?> stopApp(String appName);
+
+    ResponseEntity<?> getApp(String appName);
 }

@@ -24,9 +24,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
     @GetMapping(value = "/overview")
-    public String page() {
+    public String overview() {
         return "overview";
     }
 
+    @GetMapping(value = "/console")
+    public String console() {
+        return "console";
+    }
+
+    @GetMapping(value = "/setting")
+    public String setting() {
+        return "setting";
+    }
+
+    @GetMapping(value = "/statistics")
+    public String statistics() {
+        return "statistics";
+    }
 
 }

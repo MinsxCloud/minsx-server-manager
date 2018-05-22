@@ -35,34 +35,34 @@ public class Application extends BaseEntity implements Serializable, Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "id")
-    private String id;
+    private Integer id;
 
     private String appName;
     private String command;
     private String environments;
     private String inPath;
-    private Date beginDateTime;
-    private Date endDateTime;
+    private Date beginTime;
+    private Date endTime;
     private String charset = "UTF-8";
     private Boolean stopOnErr = false;
     private Integer bufferLength = 5000;
 
-    @Column(columnDefinition = "VARCHAR(1000000) null")
-    private StringBuffer out = new StringBuffer();
+    @Column(columnDefinition = "text")
+    private StringBuffer outBuffer = new StringBuffer();
 
-    @Column(columnDefinition = "VARCHAR(1000000) null")
-    private StringBuffer err = new StringBuffer();
+    @Column(columnDefinition = "text")
+    private StringBuffer errBuffer = new StringBuffer();
 
     @Transient
     private final static String SPLIT_STR = ";";
     @Transient
     private Shell shell;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -124,39 +124,39 @@ public class Application extends BaseEntity implements Serializable, Task {
     }
 
     @Override
-    public StringBuffer getOut() {
-        return out;
+    public StringBuffer getOutBuffer() {
+        return outBuffer;
     }
 
-    public void setOut(StringBuffer out) {
-        this.out = out;
-    }
-
-    @Override
-    public StringBuffer getErr() {
-        return err;
-    }
-
-    public void setErr(StringBuffer err) {
-        this.err = err;
+    public void setOutBuffer(StringBuffer outBuffer) {
+        this.outBuffer = outBuffer;
     }
 
     @Override
-    public Date getBeginDateTime() {
-        return beginDateTime;
+    public StringBuffer getErrBuffer() {
+        return errBuffer;
     }
 
-    public void setBeginDateTime(Date beginDateTime) {
-        this.beginDateTime = beginDateTime;
+    public void setErrBuffer(StringBuffer errBuffer) {
+        this.errBuffer = errBuffer;
     }
 
     @Override
-    public Date getEndDateTime() {
-        return endDateTime;
+    public Date getBeginTime() {
+        return beginTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
-        this.endDateTime = endDateTime;
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    @Override
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Override
@@ -190,11 +190,11 @@ public class Application extends BaseEntity implements Serializable, Task {
             throw new TaskStartException("the application has been started, can't start again", this);
         }
         shell = Shell.build(command).onOut((line, operator) -> {
-            out.append(line).append("\n");
-            handleStringBuffer(out);
+            outBuffer.append(line).append("<br/>");
+            handleStringBuffer(outBuffer);
         }).onErr((line, operator) -> {
-            err.append(line).append("\n");
-            handleStringBuffer(err);
+            errBuffer.append(line).append("<br/>");
+            handleStringBuffer(errBuffer);
             if (stopOnErr) {
                 operator.stop();
             }
@@ -206,7 +206,7 @@ public class Application extends BaseEntity implements Serializable, Task {
                 .environments(getEnvironments())
                 .inPath(inPath).logged(true);
         shell.run();
-        beginDateTime = new Date();
+        beginTime = new Date();
     }
 
     @Override
@@ -223,7 +223,7 @@ public class Application extends BaseEntity implements Serializable, Task {
     public void stop() {
         if (isRunning()) {
             shell.stop();
-            endDateTime = new Date();
+            endTime = new Date();
         } else {
             throw new TaskStopException("the application has not been started, can't stop", this);
         }

@@ -144,17 +144,17 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public StringBuffer getOut() {
+    public StringBuffer getOutBuffer() {
         return out;
     }
 
     @Override
-    public StringBuffer getErr() {
+    public StringBuffer getErrBuffer() {
         return err;
     }
 
     @Override
-    public Date getBeginDateTime() {
+    public Date getBeginTime() {
         return beginDateTime;
     }
 
@@ -163,7 +163,7 @@ public class DefaultTask implements Task {
     }
 
     @Override
-    public Date getEndDateTime() {
+    public Date getEndTime() {
         return endDateTime;
     }
 

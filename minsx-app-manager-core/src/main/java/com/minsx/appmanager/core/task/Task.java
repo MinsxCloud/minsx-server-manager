@@ -41,13 +41,13 @@ public interface Task {
 
     void setCharset(String charset);
 
-    StringBuffer getOut();
+    StringBuffer getOutBuffer();
 
-    StringBuffer getErr();
+    StringBuffer getErrBuffer();
 
-    Date getBeginDateTime();
+    Date getBeginTime();
 
-    Date getEndDateTime();
+    Date getEndTime();
 
     Integer getBufferLength();
 

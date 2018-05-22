@@ -37,7 +37,7 @@ public class ClientManager {
 
     public static void stopAllApps() {
         try {
-            HttpResponse<String> response = Unirest.get("http://localhost:8693/system/stopAllApps")
+            HttpResponse<String> response = Unirest.get("http://localhost:8695/system/stopAllApps")
                     .header("cache-control", "no-cache")
                     .asString();
         } catch (UnirestException e) {

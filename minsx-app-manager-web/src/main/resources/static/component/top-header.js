@@ -1,6 +1,6 @@
 Vue.component('top-header', {
     template: '<div id="header">' +
-    '               <a href="/">' +
+    '               <a href="/overview">' +
     '                   <div class="logo"></div>' +
     '               </a>' +
     '               <div class="title">{{title}}</div>' +

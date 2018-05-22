@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -36,9 +37,30 @@ public class ApplicationController {
         return applicationService.listApplications();
     }
 
+    @GetMapping(value = "/getApp/{appName}")
+    public ResponseEntity<?> getApp(@PathVariable String appName) {
+        return applicationService.getApp(appName);
+    }
+
+    @GetMapping(value = "/startApp/{appName}")
+    public ResponseEntity<?> startApp(@PathVariable String appName) {
+        return applicationService.startApp(appName);
+    }
+
+    @GetMapping(value = "/reStartApp/{appName}")
+    public ResponseEntity<?> reStartApp(@PathVariable String appName) {
+        return applicationService.reStartApp(appName);
+    }
+
+    @GetMapping(value = "/stopApp/{appName}")
+    public ResponseEntity<?> stopApp(@PathVariable String appName) {
+        return applicationService.stopApp(appName);
+    }
+
     @GetMapping(value = "/stopAllApps")
     public ResponseEntity<?> stopAllApps() {
         return applicationService.stopAllApps();
     }
+
 
 }

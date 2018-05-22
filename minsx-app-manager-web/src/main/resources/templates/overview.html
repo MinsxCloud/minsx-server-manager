@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>App-Manager-Platform</title>
+    <title>米斯云应用管理平台</title>
     <!-- vue-component -->
     <script th:src="@{/js/vue.js}"></script>
     <!-- minsx-style -->
@@ -11,7 +11,8 @@
     <link rel="stylesheet" th:href="@{/theme/minsx/index.css}">
     <!-- element-ui-component -->
     <script th:src="@{/js/element.js}"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- axios -->
+    <script th:src="@{/js/axios.js}"></script>
     <!-- requester -->
     <script th:src="@{/js/minsx-request.js}"></script>
 </head>
@@ -22,54 +23,52 @@
     <top-menu active-index="1"></top-menu>
     <div id="section">
 
-        <div class="top-bottom-interval-panel">
-            <div class="elem-quote">
-                说明：应用概览的相关说明
+        <div class="elem-quote">
+            说明：应用概览的相关说明
+        </div>
+
+        <el-card class="box-card" v-for="app in apps" :key="app.appName">
+            <div slot="header" class="clearfix">
+                <span class="box-card-title">{{app.appName}}</span>
+                <el-button class="float-right-button" v-on:click="stopApp(app.appName)" type="warning">停止</el-button>
+                <el-button class="float-right-button" v-on:click="reStartApp(app.appName)" type="primary">重启</el-button>
+                <el-button class="float-right-button" v-on:click="startApp(app.appName)" type="success">开启</el-button>
+                <span class="float-right-status">状态 : <i :class="app.running?'el-icon-loading':'el-icon-remove'"></i></span>
             </div>
 
-            <el-card class="box-card" v-for="app in apps" :key="app.appName">
-                <div slot="header" class="clearfix">
-                    <span class="box-card-title">{{app.appName}}</span>
-                    <span class="left-interval">状态 : <i class="el-icon-loading"></i></span>
-                    <el-button class="float-right-button" type="warning">停止</el-button>
-                    <el-button class="float-right-button" type="primary">重启</el-button>
-                    <el-button class="float-right-button" type="success">开启</el-button>
-                </div>
-
-                <el-row :gutter="12">
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">启动命令 : {{app.command | d}}</div>
-                    </el-col>
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">环境变量 : {{app.environments | d}}</div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="12">
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">运行路径 : {{app.inPath | d}}</div>
-                    </el-col>
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">运行编码 : {{app.charset | d}}</div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="12">
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">缓存长度 : {{app.bufferLength | d}}</div>
-                    </el-col>
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">异常终止 : {{app.stopOnErr | b}}</div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="12">
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">开始时间 : {{app.beginDateTime | d}}</div>
-                    </el-col>
-                    <el-col :span="12">
-                        <div class="grid-content bg-purple">结束时间 : {{app.endDateTime | d}}</div>
-                    </el-col>
-                </el-row>
-            </el-card>
-        </div>
+            <el-row :gutter="12">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">启动命令 : {{app.command | d}}</div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">环境变量 : {{app.environments | d}}</div>
+                </el-col>
+            </el-row>
+            <el-row :gutter="12">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">运行路径 : {{app.inPath | d}}</div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">运行编码 : {{app.charset | d}}</div>
+                </el-col>
+            </el-row>
+            <el-row :gutter="12">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">缓存长度 : {{app.bufferLength | d}}</div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">异常终止 : {{app.stopOnErr | b}}</div>
+                </el-col>
+            </el-row>
+            <el-row :gutter="12">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">开始时间 : {{app.beginTime | d}}</div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">结束时间 : {{app.endTime | d}}</div>
+                </el-col>
+            </el-row>
+        </el-card>
 
     </div>
     <bottom-footer></bottom-footer>
@@ -97,17 +96,69 @@
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
             },
-            getApps() {
+            initialAppsInfo() {
                 MinsxRequest.get("/app/listApps").then(response => {
                     if (response.status === 200) {
                         this.apps = response.data;
                     }
                 }).catch(error => {
+                    this.$message({
+                        message: error.response.data,
+                        type: 'error'
+                    });
+                });
+            },
+            startApp(appName) {
+                MinsxRequest.get("/app/startApp/" + appName).then(response => {
+                    if (response.status === 200) {
+                        this.initialAppsInfo();
+                        this.$message({
+                            message: '启动成功',
+                            type: 'success'
+                        });
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: error.response.data,
+                        type: 'error'
+                    });
+                });
+            },
+            reStartApp(appName) {
+                MinsxRequest.get("/app/reStartApp/" + appName).then(response => {
+                    if (response.status === 200) {
+                        this.initialAppsInfo();
+                        this.$message({
+                            message: '重启成功',
+                            type: 'success'
+                        });
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: error.response.data,
+                        type: 'error'
+                    });
+                });
+            },
+            stopApp(appName) {
+                MinsxRequest.get("/app/stopApp/" + appName).then(response => {
+                    if (response.status === 200) {
+                        this.initialAppsInfo();
+                        this.$message({
+                            message: '停止成功',
+                            type: 'success'
+                        });
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: error.response.data,
+                        type: 'error'
+                    });
                 });
             }
         },
         created: function () {
-            this.getApps();
+            this.initialAppsInfo();
         }
     });
 

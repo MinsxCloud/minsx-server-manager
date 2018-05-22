@@ -25,13 +25,13 @@ public class ApplicationUtils {
     public static void flushApplication(Application application, Task task) {
         application.setInPath(task.getInPath());
         application.setCommand(task.getCommand());
-        application.setBeginDateTime(task.getBeginDateTime());
-        application.setEndDateTime(task.getEndDateTime());
+        application.setBeginTime(task.getBeginTime());
+        application.setEndTime(task.getEndTime());
         application.setBufferLength(task.getBufferLength());
         application.setCharset(task.getCharset());
         application.setEnvironments(task.getEnvironments());
-        application.setErr(task.getErr());
-        application.setOut(task.getOut());
+        application.setErrBuffer(task.getErrBuffer());
+        application.setOutBuffer(task.getOutBuffer());
         application.setStopOnErr(task.getStopOnErr());
     }
 

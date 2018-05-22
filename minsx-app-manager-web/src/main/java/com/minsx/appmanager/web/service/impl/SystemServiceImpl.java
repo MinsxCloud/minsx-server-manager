@@ -45,8 +45,8 @@ public class SystemServiceImpl implements SystemService {
     public ResponseEntity<?> printOut() {
         TaskManager.consume((appName, task) -> {
             System.out.println("appName = " + appName);
-            System.out.println("out = " + task.getOut().toString());
-            System.out.println("err = " + task.getErr().toString());
+            System.out.println("out = " + task.getOutBuffer().toString());
+            System.out.println("err = " + task.getErrBuffer().toString());
             System.out.println();
         });
         return new ResponseEntity<>(HttpStatus.OK);

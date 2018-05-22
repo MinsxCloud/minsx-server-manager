@@ -23,22 +23,38 @@ public class ListenerManager {
             status.append("AppName").append("  ").append("BeginTime").append("\n");
             status.append("").append("\n");
             TaskManager.consume((appName, task) -> {
-                status.append(appName).append(" ").append(SDF.format(task.getBeginDateTime())).append("\n");
+                status.append(appName).append(" ").append(SDF.format(task.getBeginTime())).append("\n");
             });
             status.deleteCharAt(status.length() - 1);
             SystemWindow.TRAY_ITEM.setToolTipText(status.toString());
         });
 
 
-        // The left click of the lower right click the icon event
+        // The left click of the lower right the icon event
         SystemWindow.TRAY_ITEM.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                SystemUtils.openWeb("http://localhost:8693");
+                SystemUtils.openWeb("http://localhost:8695/overview");
             }
         });
 
-        // Right key at the lower right click the icon event
+        // The left click of the lower right app details menu event
+        SystemWindow.APP_DETAILS_MENU_ITEM.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                SystemUtils.openWeb("http://localhost:8695/overview");
+            }
+        });
+
+        // The left click of the lower right setting menu event
+        SystemWindow.SETTING_MENU_ITEM.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                SystemUtils.openWeb("http://localhost:8695/setting");
+            }
+        });
+
+        // Right key at the lower right the icon event
         SystemWindow.TRAY_ITEM.addMenuDetectListener(e -> SystemWindow.MENU.setVisible(true));
 
         // Exit the program menu event at the lower right

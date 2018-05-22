@@ -33,7 +33,7 @@ public class SystemWindow {
         SHELL = new Shell(DISPLAY, SWT.NONE);
         SHELL.setImage(SWTManager.getResourceImage("Logo.ico"));
         SHELL.setSize(0, 0);
-        SHELL.setText("AppManager");
+        SHELL.setText("应用管理系统");
         //system bar icon control
         TRAY = DISPLAY.getSystemTray();
         TRAY_ITEM = new TrayItem(TRAY, SWT.NONE);
