@@ -1,4 +1,4 @@
-# AppManager
+# App-Manager-Paltform
 MinsxAppManager 是一款用于管理后台App或服务的自动化系统
 
 ### 系统说明
